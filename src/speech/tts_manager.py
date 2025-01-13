@@ -1,3 +1,4 @@
+import time
 from threading import Thread
 
 import pyttsx3
@@ -12,7 +13,7 @@ class TTSManager:
         if self._tts_thread and self._tts_thread.is_alive():
             return  # Skip if still speaking
 
-        self._tts_thread = Thread(target=self._speak, args=(text,))
+        self._tts_thread = Thread(target=self._speak, args=(text,), daemon=True)
         self._tts_thread.start()
 
     def _speak(self, text):
