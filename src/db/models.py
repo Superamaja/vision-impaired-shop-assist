@@ -17,8 +17,20 @@ class Barcode(Base):
 
 
 # Create a new database
-engine = create_engine("sqlite:///database.db")
-Session = sessionmaker(bind=engine)
+# engine = create_engine("sqlite:///database.db")
+# Session = sessionmaker(bind=engine)
 
-# Create the table
-Base.metadata.create_all(engine)
+# # Create the table
+# Base.metadata.create_all(engine)
+
+
+class DatabaseManager:
+    def __init__(self, db_url="sqlite:///database.db"):
+        self.engine = create_engine(db_url)
+        self.Session = sessionmaker(bind=self.engine)
+
+    def init_db(self):
+        Base.metadata.create_all(self.engine)
+
+    def get_session(self):
+        return self.Session()
