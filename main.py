@@ -34,7 +34,8 @@ def main():
             annotated_frame = TextOverlay.draw_boxes(frame, boxes, draw_text=True)
             display.show("Detected Text", annotated_frame)
 
-            print(f"Detected text: {text}")
+            if text:
+                print(f"Detected text: {text}")
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
