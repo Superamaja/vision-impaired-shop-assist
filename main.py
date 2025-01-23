@@ -1,3 +1,5 @@
+import time
+
 import cv2
 
 from src.camera.camera_manager import CameraManager
@@ -17,6 +19,9 @@ def main():
     text_detector = TextDetector()
     tts = TTSManager()
 
+    fps = 0
+    frame_time = time.time()
+
     try:
         camera.initialize()
         last_text = ""
@@ -26,8 +31,13 @@ def main():
             if not ret:
                 break
 
-            processed_frame, normalized = ImageProcessor.preprocess(frame)
+            # Calculate FPS
+            current_time = time.time()
+            fps = 1 / (current_time - frame_time)
+            frame_time = current_time
 
+            # Process frame
+            processed_frame, normalized = ImageProcessor.preprocess(frame)
             boxes = text_detector.get_boxes(processed_frame)
             text = " ".join(boxes.get("text", []))
 
@@ -39,6 +49,7 @@ def main():
             # Display results
             if Config.DEBUG:
                 annotated_frame = TextOverlay.draw_boxes(frame, boxes, draw_text=True)
+                annotated_frame = TextOverlay.draw_fps(annotated_frame, fps)
                 display.show("Debug", annotated_frame)
                 display.show("Normalized", normalized)
                 display.show("Processed", processed_frame)

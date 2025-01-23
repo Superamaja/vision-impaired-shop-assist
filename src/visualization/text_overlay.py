@@ -23,3 +23,16 @@ class TextOverlay:
                     thickness,
                 )
         return display
+
+    @staticmethod
+    def draw_fps(frame, fps):
+        cv2.putText(
+            frame,
+            f"FPS: {fps:.2f}",
+            (10, 20),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 255, 0),
+            1,
+        )
+        return frame
