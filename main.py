@@ -1,6 +1,7 @@
 import cv2
 
 from src.camera.camera_manager import CameraManager
+from src.image_processing.image_processor import ImageProcessor
 from src.ocr.text_detector import TextDetector
 from src.speech.tts_manager import TTSManager
 from src.visualization.display import DisplayManager
@@ -22,7 +23,9 @@ def main():
             if not ret:
                 break
 
-            boxes = text_detector.get_boxes(frame)
+            processed_frame, normalized = ImageProcessor.preprocess(frame)
+
+            boxes = text_detector.get_boxes(processed_frame)
             print(
                 f"Average confidence: {text_detector.get_average_confidence(boxes):.2f}"
             )
@@ -35,7 +38,9 @@ def main():
 
             # Display results
             annotated_frame = TextOverlay.draw_boxes(frame, boxes, draw_text=True)
-            display.show("Detected Text", annotated_frame)
+            display.show("Debug", annotated_frame)
+            display.show("Normalized", normalized)
+            display.show("Processed", processed_frame)
 
             if text:
                 print(f"Detected text: {text}")
