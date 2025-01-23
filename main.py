@@ -23,6 +23,9 @@ def main():
                 break
 
             boxes = text_detector.get_boxes(frame)
+            print(
+                f"Average confidence: {text_detector.get_average_confidence(boxes):.2f}"
+            )
             text = " ".join(boxes.get("text", []))
 
             # Only speak if text changed

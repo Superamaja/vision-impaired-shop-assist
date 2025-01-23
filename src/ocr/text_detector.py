@@ -34,6 +34,9 @@ class TextDetector:
         data = self._filter_confidence(data)
         return self._filter_blank(data)
 
+    def get_average_confidence(self, data):
+        return sum(data["conf"]) / len(data["conf"]) if data["conf"] else 0
+
     def _filter_confidence(self, data, min_conf=60):
         return {
             k: [v[i] for i, conf in enumerate(data["conf"]) if float(conf) > min_conf]
