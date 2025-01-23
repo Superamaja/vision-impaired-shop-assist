@@ -3,11 +3,16 @@ from functools import wraps
 
 import pytesseract
 
+from ..config import Config
+
 
 def timeit(message=None):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            if not Config.DEBUG:
+                return func(*args, **kwargs)
+
             start = time.time()
             result = func(*args, **kwargs)
             duration = time.time() - start

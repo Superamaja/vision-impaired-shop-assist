@@ -1,6 +1,7 @@
 import cv2
 
 from src.camera.camera_manager import CameraManager
+from src.config import Config
 from src.image_processing.image_processor import ImageProcessor
 from src.ocr.text_detector import TextDetector
 from src.speech.tts_manager import TTSManager
@@ -9,6 +10,8 @@ from src.visualization.text_overlay import TextOverlay
 
 
 def main():
+    Config.enable_debug()
+
     camera = CameraManager()
     display = DisplayManager()
     text_detector = TextDetector()
@@ -26,9 +29,6 @@ def main():
             processed_frame, normalized = ImageProcessor.preprocess(frame)
 
             boxes = text_detector.get_boxes(processed_frame)
-            print(
-                f"Average confidence: {text_detector.get_average_confidence(boxes):.2f}"
-            )
             text = " ".join(boxes.get("text", []))
 
             # Only speak if text changed
@@ -37,13 +37,17 @@ def main():
                 last_text = text
 
             # Display results
-            annotated_frame = TextOverlay.draw_boxes(frame, boxes, draw_text=True)
-            display.show("Debug", annotated_frame)
-            display.show("Normalized", normalized)
-            display.show("Processed", processed_frame)
+            if Config.DEBUG:
+                annotated_frame = TextOverlay.draw_boxes(frame, boxes, draw_text=True)
+                display.show("Debug", annotated_frame)
+                display.show("Normalized", normalized)
+                display.show("Processed", processed_frame)
 
-            if text:
-                print(f"Detected text: {text}")
+                if text:
+                    print(f"Detected text: {text}")
+                    print(
+                        f"Average confidence: {text_detector.get_average_confidence(boxes):.2f}"
+                    )
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
