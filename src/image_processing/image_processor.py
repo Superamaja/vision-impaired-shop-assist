@@ -18,6 +18,6 @@ class ImageProcessor:
 
     @staticmethod
     def _threshold(frame, threshold=127):
-        """Apply thresholding to the frame."""
+        """Apply thresholding to the frame. Anything below the threshold will be set to 0 (black)."""
         _, thresholded = cv2.threshold(frame, threshold, 255, cv2.THRESH_BINARY)
         return thresholded
