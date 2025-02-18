@@ -1,5 +1,7 @@
 import cv2
 
+from ..config import Config
+
 
 class ImageProcessor:
     @staticmethod
@@ -12,7 +14,9 @@ class ImageProcessor:
         normalized = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
 
         # Apply thresholding
-        thresholded = ImageProcessor._threshold(normalized, threshold=70)
+        thresholded = ImageProcessor._threshold(
+            normalized, threshold=Config.THRESHOLDING
+        )
 
         return thresholded, normalized
 

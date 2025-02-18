@@ -9,10 +9,12 @@ from src.ocr.text_detector import TextDetector
 from src.speech.tts_manager import TTSManager
 from src.visualization.display import DisplayManager
 from src.visualization.text_overlay import TextOverlay
+from src.web.api import start_server
 
 
 def main():
     Config.enable_debug()
+    start_server()
 
     camera = CameraManager()
     display = DisplayManager()
