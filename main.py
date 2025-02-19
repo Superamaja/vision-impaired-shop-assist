@@ -13,7 +13,7 @@ from src.web.api import start_server
 
 
 def main():
-    Config.enable_debug()
+    # Config.enable_debug()
     start_server()
 
     camera = CameraManager()

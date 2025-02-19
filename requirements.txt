@@ -3,3 +3,4 @@ pytesseract
 pyttsx3
 sqlalchemy
 flask
+flask-cors

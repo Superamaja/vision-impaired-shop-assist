@@ -1,10 +1,12 @@
 from threading import Thread
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from src.config import Config
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/api/settings", methods=["GET"])
@@ -19,6 +21,7 @@ def update_settings():
         return jsonify({"error": "No settings provided"}), 400
 
     updated = Config.update_settings(settings)
+    print("Settings:", Config.get_all_settings())
     return jsonify({"updated": updated})
 
 
