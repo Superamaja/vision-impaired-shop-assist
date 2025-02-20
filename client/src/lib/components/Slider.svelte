@@ -5,6 +5,7 @@
         max = 100,
         label,
         step = 1,
+        update = () => {},
     }: Props = $props();
 
     interface Props {
@@ -13,6 +14,7 @@
         max?: number;
         label: string;
         step?: number;
+        update?: () => void;
     }
 </script>
 
@@ -26,6 +28,8 @@
         {max}
         {step}
         bind:value
+        onmouseup={() => update()}
+        ontouchend={() => update()}
         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
     />
 </div>

@@ -1,15 +1,21 @@
 <script lang="ts">
-    let { checked = $bindable(), label }: Props = $props();
+    let { checked = $bindable(), label, update = () => {} }: Props = $props();
 
     interface Props {
         checked: boolean;
         label: string;
+        update?: () => void;
     }
 </script>
 
 <label class="flex items-center gap-2 cursor-pointer">
     <div class="relative">
-        <input type="checkbox" class="sr-only" bind:checked />
+        <input
+            type="checkbox"
+            class="sr-only"
+            bind:checked
+            onchange={() => update()}
+        />
         <div
             class={`block w-14 h-8 rounded-full transition-colors ${
                 checked ? "bg-blue-600" : "bg-gray-300"

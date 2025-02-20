@@ -7,21 +7,21 @@
     onMount(() => {
         fetchConfig();
     });
-
-    const handleSubmit = (event: Event) => {
-        event.preventDefault();
-        updateConfig();
-    };
 </script>
 
 <form class="space-y-6 max-w-md mx-auto p-4">
-    <Toggle label="Debug Mode" bind:checked={config.DEBUG} />
+    <Toggle
+        label="Debug Mode"
+        bind:checked={config.DEBUG}
+        update={updateConfig}
+    />
 
     <Slider
         label="Text-to-Speech Speed"
         min={100}
         max={500}
         bind:value={config.TTS_SPEED}
+        update={updateConfig}
     />
 
     <Slider
@@ -29,13 +29,6 @@
         min={0}
         max={255}
         bind:value={config.THRESHOLDING}
+        update={updateConfig}
     />
-
-    <button
-        type="submit"
-        class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-        on:click={handleSubmit}
-    >
-        Submit
-    </button>
 </form>
