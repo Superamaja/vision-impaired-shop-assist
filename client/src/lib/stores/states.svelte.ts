@@ -11,7 +11,7 @@ export const config: Config = $state({
 });
 
 export const fetchConfig = async () => {
-    const response = await fetch("http://localhost:5000/api/settings");
+    const response = await fetch("http://localhost:5001/api/settings");
     const data = await response.json();
     for (const key in data) {
         if (key in config) {
@@ -21,7 +21,7 @@ export const fetchConfig = async () => {
 };
 
 export const updateConfig = async () => {
-    const response = await fetch("http://localhost:5000/api/settings", {
+    const response = await fetch("http://localhost:5001/api/settings", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

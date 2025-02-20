@@ -25,7 +25,7 @@ def update_settings():
     return jsonify({"updated": updated})
 
 
-def run_api(host="0.0.0.0", port=5000):
+def run_api(host="0.0.0.0", port=5001):
     app.run(host=host, port=port, debug=False, threaded=True)
 
 
