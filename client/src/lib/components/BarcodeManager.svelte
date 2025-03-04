@@ -33,7 +33,7 @@
                 await fetchBarcodes();
                 newBarcode = { barcode: "", product_name: "", brand: "" };
                 success = "Barcode added successfully";
-                setTimeout(() => (success = ""), 3000);
+                setTimeout(() => (success = ""), 5000);
             } else {
                 const data = await response.json();
                 error = data.error || "Failed to add barcode";
@@ -54,7 +54,7 @@
             if (response.ok) {
                 await fetchBarcodes();
                 success = "Barcode deleted successfully";
-                setTimeout(() => (success = ""), 3000);
+                setTimeout(() => (success = ""), 5000);
             } else {
                 error = "Failed to delete barcode";
             }
@@ -66,7 +66,7 @@
     onMount(fetchBarcodes);
 </script>
 
-<div class="space-y-6 max-w-2xl mx-auto p-4">
+<div class="space-y-6 max-w-6xl mx-auto p-4">
     <h2 class="text-2xl font-bold mb-4">Barcode Management</h2>
 
     {#if error}
@@ -137,28 +137,41 @@
 
     <div class="mt-8">
         <h3 class="text-xl font-semibold mb-4">Saved Barcodes</h3>
-        <div class="bg-white shadow-sm rounded-lg">
-            {#each barcodes as barcode}
-                <div
-                    class="p-4 border-b last:border-b-0 flex justify-between items-center"
-                >
-                    <div>
-                        <p class="font-medium">{barcode.product_name}</p>
-                        <p class="text-sm text-gray-600">
-                            Barcode: {barcode.barcode}
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            Brand: {barcode.brand}
-                        </p>
-                    </div>
-                    <button
-                        onclick={() => deleteBarcode(barcode.barcode)}
-                        class="text-red-600 hover:text-red-800 focus:outline-none"
+
+        {#if barcodes.length === 0}
+            <p class="text-gray-500 text-center py-6">
+                No barcodes found. Add one above.
+            </p>
+        {:else}
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            >
+                {#each barcodes as barcode}
+                    <div
+                        class="bg-white shadow-sm rounded-lg p-4 flex flex-col h-full"
                     >
-                        Delete
-                    </button>
-                </div>
-            {/each}
-        </div>
+                        <div class="flex-grow">
+                            <p class="font-medium text-lg">
+                                {barcode.product_name}
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                Barcode: {barcode.barcode}
+                            </p>
+                            <p class="text-sm text-gray-600 mb-3">
+                                Brand: {barcode.brand}
+                            </p>
+                        </div>
+                        <div class="mt-auto pt-2 border-t">
+                            <button
+                                onclick={() => deleteBarcode(barcode.barcode)}
+                                class="text-red-600 hover:text-red-800 focus:outline-none text-sm"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        {/if}
     </div>
 </div>
