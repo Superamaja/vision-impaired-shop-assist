@@ -62,6 +62,9 @@ def main():
                         f"Average confidence: {text_detector.get_average_confidence(boxes):.2f}"
                     )
 
+            else:
+                display.cleanup()
+
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
