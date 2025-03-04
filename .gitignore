@@ -172,3 +172,8 @@ cython_debug/
 
 # Editor directories or files
 .vscode/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
