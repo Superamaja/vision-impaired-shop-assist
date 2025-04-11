@@ -24,27 +24,42 @@
   async function addBarcode(event: Event) {
     event.preventDefault();
     try {
+      // Update UI instantly
+      const barcodeToAdd = { ...newBarcode };
+      barcodes = [...barcodes, barcodeToAdd];
+
+      // Reset form immediately for better UX
+      newBarcode = { barcode: "", product_name: "", brand: "" };
+
       const response = await fetch("http://localhost:5001/api/barcodes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newBarcode),
+        body: JSON.stringify(barcodeToAdd),
       });
+
       if (response.ok) {
+        // Fetch from server to ensure data consistency
         await fetchBarcodes();
-        newBarcode = { barcode: "", product_name: "", brand: "" };
         success = "Barcode added successfully";
         setTimeout(() => (success = ""), 5000);
       } else {
+        // Revert optimistic update if request fails
+        await fetchBarcodes();
         const data = await response.json();
         error = data.error || "Failed to add barcode";
       }
     } catch (e) {
+      // Revert optimistic update if request fails
+      await fetchBarcodes();
       error = "Failed to add barcode";
     }
   }
 
   async function deleteBarcode(barcode: string) {
     try {
+      // Update UI instantly
+      barcodes = barcodes.filter((b) => b.barcode !== barcode);
+
       const response = await fetch(
         `http://localhost:5001/api/barcodes/${barcode}`,
         {
