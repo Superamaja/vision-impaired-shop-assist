@@ -2,8 +2,10 @@ import time
 
 import cv2
 
+from src.barcode.input_handler import BarcodeInputHandler
 from src.camera.camera_manager import CameraManager
 from src.config import Config
+from src.db.models import DatabaseManager
 from src.image_processing.image_processor import ImageProcessor
 from src.ocr.text_detector import TextDetector
 from src.speech.tts_manager import TTSManager
@@ -16,10 +18,19 @@ def main():
     # Config.enable_debug()
     start_server()
 
+    # Initialize shared components
+    db_manager = DatabaseManager()
+    tts_manager = TTSManager()
+
+    # Initialize barcode input handler with shared components
+    barcode_handler = BarcodeInputHandler(
+        db_manager=db_manager, tts_manager=tts_manager
+    )
+    barcode_handler.start()
+
     camera = CameraManager()
     display = DisplayManager()
     text_detector = TextDetector()
-    tts = TTSManager()
 
     fps = 0
     frame_time = time.time()
@@ -45,7 +56,7 @@ def main():
 
             # Only speak if text changed
             if text and text != last_text:
-                tts.say_async(text)
+                tts_manager.say_async(text)
                 last_text = text
 
             # Display results
@@ -69,6 +80,7 @@ def main():
                 break
 
     finally:
+        barcode_handler.stop()
         camera.release()
         display.cleanup()
 
