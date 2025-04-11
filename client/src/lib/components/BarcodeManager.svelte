@@ -90,18 +90,6 @@
     class="space-y-4 bg-white p-6 rounded-lg shadow-sm"
   >
     <div>
-      <label for="barcode" class="block text-sm font-medium text-gray-700"
-        >Barcode</label
-      >
-      <input
-        id="barcode"
-        type="text"
-        bind:value={newBarcode.barcode}
-        required
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-      />
-    </div>
-    <div>
       <label for="product_name" class="block text-sm font-medium text-gray-700"
         >Product Name</label
       >
@@ -121,6 +109,18 @@
         id="brand"
         type="text"
         bind:value={newBarcode.brand}
+        required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+    </div>
+    <div>
+      <label for="barcode" class="block text-sm font-medium text-gray-700"
+        >Barcode</label
+      >
+      <input
+        id="barcode"
+        type="text"
+        bind:value={newBarcode.barcode}
         required
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
       />
