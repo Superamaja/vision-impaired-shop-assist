@@ -26,6 +26,8 @@
 
   async function addBarcode(event: Event) {
     event.preventDefault();
+    error = "";
+    success = "";
     try {
       // Update UI instantly
       const barcodeToAdd = { ...newBarcode };
@@ -53,17 +55,21 @@
         success = "Barcode added successfully";
         setTimeout(() => (success = ""), 5000);
       } else {
-        // Revert optimistic update if request fails
+        // Revert optimistic update if request fails (refetch)
         await fetchBarcodes();
         const data = await response.json();
-        error = data.error || "Failed to add barcode";
+        if (response.status === 409) {
+          error = data.error || "Barcode already exists.";
+        } else {
+          error = data.error || "Failed to add barcode";
+        }
       }
     } catch (e) {
       // Revert optimistic update if request fails
       isLoading = false;
       loadingMessage = "";
       await fetchBarcodes();
-      error = "Failed to add barcode";
+      error = "Failed to add barcode. Check network connection.";
     }
   }
 

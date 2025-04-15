@@ -1,8 +1,13 @@
 from sqlalchemy import Column, String, create_engine
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
+
+
+class BarcodeExistsError(Exception):
+    pass
 
 
 class Barcode(Base):
@@ -27,7 +32,7 @@ class DatabaseManager:
     def get_session(self):
         return self.Session()
 
-    def add_barcode(self, barcode: str, product_name: str, brand: str) -> Barcode:
+    def add_barcode(self, barcode: str, product_name: str, brand: str) -> dict:
         session = self.get_session()
         try:
             barcode_entry = Barcode(
@@ -42,6 +47,9 @@ class DatabaseManager:
                 "brand": barcode_entry.brand,
             }
             return result
+        except IntegrityError:
+            session.rollback()
+            raise BarcodeExistsError(f"Barcode '{barcode}' already exists.")
         except Exception as e:
             session.rollback()
             raise e

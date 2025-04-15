@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from src.config import Config
-from src.db.models import DatabaseManager
+from src.db.models import BarcodeExistsError, DatabaseManager
 
 app = Flask(__name__)
 CORS(app)
@@ -64,6 +64,8 @@ def add_barcode():
             data["barcode"], data["product_name"], data["brand"]
         )
         return jsonify(barcode_data), 201
+    except BarcodeExistsError as e:
+        return jsonify({"error": str(e)}), 409
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
