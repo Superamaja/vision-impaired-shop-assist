@@ -27,17 +27,14 @@
     event.preventDefault();
     error = "";
     success = "";
+    isLoading = true;
+    loadingMessage = "Adding barcode...";
+
     try {
-      // Update UI instantly
       const barcodeToAdd = { ...newBarcode };
+      const originalBarcodes = barcodes;
       barcodes = [...barcodes, barcodeToAdd];
-
-      // Reset form immediately for better UX
       newBarcode = { barcode: "", product_name: "", brand: "" };
-
-      // Show loading state
-      isLoading = true;
-      loadingMessage = "Adding barcode...";
 
       const response = await fetch("http://localhost:5001/api/barcodes", {
         method: "POST",
@@ -45,42 +42,42 @@
         body: JSON.stringify(barcodeToAdd),
       });
 
-      isLoading = false;
-      loadingMessage = "";
-
       if (response.ok) {
-        // Fetch from server to ensure data consistency
         await fetchBarcodes();
         success = "Barcode added successfully";
+        isLoading = false;
+        loadingMessage = "";
         setTimeout(() => (success = ""), 5000);
       } else {
-        // Revert optimistic update if request fails (refetch)
-        await fetchBarcodes();
+        barcodes = originalBarcodes;
         const data = await response.json();
         if (response.status === 409) {
           error = data.error || "Barcode already exists.";
         } else {
           error = data.error || "Failed to add barcode";
         }
+        isLoading = false;
+        loadingMessage = "";
+        setTimeout(() => (error = ""), 5000);
       }
     } catch (e) {
-      // Revert optimistic update if request fails
-      isLoading = false;
-      loadingMessage = "";
       await fetchBarcodes();
       error = "Failed to add barcode. Check network connection.";
+      isLoading = false;
+      loadingMessage = "";
+      setTimeout(() => (error = ""), 5000);
     }
   }
 
   async function deleteBarcode(barcode: string) {
     error = "";
     success = "";
+    isLoading = true;
+    loadingMessage = `Deleting barcode ${barcode}...`;
+
     try {
       const originalBarcodes = barcodes;
       barcodes = barcodes.filter((b) => b.barcode !== barcode);
-
-      isLoading = true;
-      loadingMessage = `Deleting barcode ${barcode}...`;
 
       const response = await fetch(
         `http://localhost:5001/api/barcodes/${barcode}`,
@@ -89,22 +86,24 @@
         },
       );
 
-      isLoading = false;
-      loadingMessage = "";
-
       if (response.ok) {
-        await fetchBarcodes();
         success = "Barcode deleted successfully";
+        isLoading = false;
+        loadingMessage = "";
         setTimeout(() => (success = ""), 5000);
       } else {
         barcodes = originalBarcodes;
         error = "Failed to delete barcode";
+        isLoading = false;
+        loadingMessage = "";
+        setTimeout(() => (error = ""), 5000);
       }
     } catch (e) {
-      isLoading = false;
-      loadingMessage = "";
       await fetchBarcodes();
       error = "Failed to delete barcode. Check network connection.";
+      isLoading = false;
+      loadingMessage = "";
+      setTimeout(() => (error = ""), 5000);
     }
   }
 
@@ -201,6 +200,7 @@
     <button
       type="submit"
       class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      disabled={isLoading}
     >
       Add Barcode
     </button>
