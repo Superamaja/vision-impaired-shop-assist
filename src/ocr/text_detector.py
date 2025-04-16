@@ -5,6 +5,9 @@ import pytesseract
 
 from ..config import Config
 
+# Add import for TTSManager if type hinting is desired, otherwise optional
+# from ..speech.tts_manager import TTSManager
+
 
 def timeit(message=None):
     def decorator(func):
@@ -29,15 +32,29 @@ def timeit(message=None):
 
 
 class TextDetector:
-    def __init__(self, config=None):
+    def __init__(self, config=None, tts_manager=None):
         self.config = config or {}
-        self.debug = True
+        self.tts_manager = tts_manager
+        self.last_text = ""
 
     @timeit("OCR Time")
     def get_boxes(self, frame):
         data = pytesseract.image_to_data(frame, output_type=pytesseract.Output.DICT)
         data = self._filter_confidence(data)
         return self._filter_blank(data)
+
+    def process_frame(self, frame):
+        """Processes a frame for text, performs OCR, and speaks if text changes."""
+        boxes = self.get_boxes(frame)
+        text = " ".join(boxes.get("text", []))
+
+        if text and text != self.last_text and self.tts_manager:
+            self.tts_manager.say_async(text)
+            self.last_text = text
+        elif not text:
+            self.last_text = ""
+
+        return boxes, text
 
     def get_average_confidence(self, data):
         return sum(data["conf"]) / len(data["conf"]) if data["conf"] else 0

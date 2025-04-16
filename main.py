@@ -30,14 +30,13 @@ def main():
 
     camera = CameraManager()
     display = DisplayManager()
-    text_detector = TextDetector()
+    text_detector = TextDetector(tts_manager=tts_manager)
 
     fps = 0
     frame_time = time.time()
 
     try:
         camera.initialize()
-        last_text = ""
 
         while True:
             ret, frame = camera.get_frame()
@@ -49,15 +48,11 @@ def main():
             fps = 1 / (current_time - frame_time)
             frame_time = current_time
 
-            # Process frame
+            # Process frame using ImageProcessor
             processed_frame, normalized = ImageProcessor.preprocess(frame)
-            boxes = text_detector.get_boxes(processed_frame)
-            text = " ".join(boxes.get("text", []))
 
-            # Only speak if text changed
-            if text and text != last_text:
-                tts_manager.say_async(text)
-                last_text = text
+            # Use TextDetector to get boxes, text, and handle TTS
+            boxes, text = text_detector.process_frame(processed_frame)
 
             # Display results
             if Config.DEBUG:
@@ -69,9 +64,15 @@ def main():
 
                 if text:
                     print(f"Detected text: {text}")
-                    print(
-                        f"Average confidence: {text_detector.get_average_confidence(boxes):.2f}"
-                    )
+                    # Ensure boxes is not empty before calculating confidence
+                    if boxes.get("conf"):
+                        print(
+                            f"Average confidence: {text_detector.get_average_confidence(boxes):.2f}"
+                        )
+                    else:
+                        print(
+                            "Average confidence: N/A (no text detected with sufficient confidence)"
+                        )
 
             else:
                 display.cleanup()
