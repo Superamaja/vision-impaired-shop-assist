@@ -46,7 +46,8 @@ class TextDetector:
         text = " ".join(boxes.get("text", []))
 
         if text and text != self.last_text and self.tts_manager:
-            self.tts_manager.say_async(text)
+            tts_message = Config.TTS_OCR_TEMPLATE.format(text=text)
+            self.tts_manager.say_async(tts_message)
             self.last_text = text
         elif not text:
             self.last_text = ""

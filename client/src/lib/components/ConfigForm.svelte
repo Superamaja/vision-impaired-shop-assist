@@ -3,6 +3,7 @@
   import { config, fetchConfig, updateConfig } from "../stores/states.svelte";
   import Slider from "./Slider.svelte";
   import Toggle from "./Toggle.svelte";
+  import TextInput from "./TextInput.svelte";
 
   onMount(() => {
     fetchConfig();
@@ -31,4 +32,35 @@
     bind:value={config.THRESHOLDING}
     update={updateConfig}
   />
+
+  <TextInput
+    label="TTS OCR Template"
+    bind:value={config.TTS_OCR_TEMPLATE}
+    update={updateConfig}
+    placeholder={"{text}"}
+  />
+  <p class="text-xs text-gray-500 mt-1">
+    Available variables: <code>{"{text}"}</code>
+  </p>
+
+  <TextInput
+    label="TTS Barcode Found Template"
+    bind:value={config.TTS_BARCODE_FOUND_TEMPLATE}
+    update={updateConfig}
+    placeholder={"Product: {product_name}, Brand: {brand}"}
+  />
+  <p class="text-xs text-gray-500 mt-1">
+    Available variables: <code>{"{product_name}"}</code>,
+    <code>{"{brand}"}</code>
+  </p>
+
+  <TextInput
+    label="TTS Barcode Not Found Template"
+    bind:value={config.TTS_BARCODE_NOT_FOUND_TEMPLATE}
+    update={updateConfig}
+    placeholder={"Unknown barcode scanned"}
+  />
+  <p class="text-xs text-gray-500 mt-1">
+    Available variables: <code>{"{barcode}"}</code>
+  </p>
 </form>

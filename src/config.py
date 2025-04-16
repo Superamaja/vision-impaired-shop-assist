@@ -4,6 +4,9 @@ class Config:
 
     # TTS settings
     TTS_SPEED = 200
+    TTS_OCR_TEMPLATE = "{text}"
+    TTS_BARCODE_FOUND_TEMPLATE = "Product: {product_name}, Brand: {brand}"
+    TTS_BARCODE_NOT_FOUND_TEMPLATE = "Unknown barcode scanned"
 
     # Image processing settings
     THRESHOLDING = 70

@@ -3,6 +3,7 @@ import threading
 import time
 from queue import Queue
 
+from ..config import Config
 from ..db.models import DatabaseManager
 from ..speech.tts_manager import TTSManager
 
@@ -77,18 +78,18 @@ class BarcodeInputHandler:
         barcode_info = self.db_manager.get_barcode(barcode)
 
         if barcode_info:
-            message = (
-                f"Product: {barcode_info.product_name}, Brand: {barcode_info.brand}"
+            message = Config.TTS_BARCODE_FOUND_TEMPLATE.format(
+                product_name=barcode_info.product_name, brand=barcode_info.brand
             )
-            print(message)
+            print(f"Product: {barcode_info.product_name}, Brand: {barcode_info.brand}")
 
             # Speak the product information if TTS is available
             if self.tts_manager:
                 self.tts_manager.say_async(message)
         else:
-            message = f"Unknown barcode: {barcode}"
-            print(message)
+            message = Config.TTS_BARCODE_NOT_FOUND_TEMPLATE.format(barcode=barcode)
+            print(f"Unknown barcode: {barcode}")
 
             # Speak the error message if TTS is available
             if self.tts_manager:
-                self.tts_manager.say_async("Unknown barcode scanned")
+                self.tts_manager.say_async(message)

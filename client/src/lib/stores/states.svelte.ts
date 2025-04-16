@@ -2,12 +2,18 @@ interface Config {
   DEBUG: boolean;
   TTS_SPEED: number;
   THRESHOLDING: number;
+  TTS_OCR_TEMPLATE: string;
+  TTS_BARCODE_FOUND_TEMPLATE: string;
+  TTS_BARCODE_NOT_FOUND_TEMPLATE: string;
 }
 
 export const config: Config = $state({
   DEBUG: false,
   TTS_SPEED: 0,
   THRESHOLDING: 0,
+  TTS_OCR_TEMPLATE: "",
+  TTS_BARCODE_FOUND_TEMPLATE: "",
+  TTS_BARCODE_NOT_FOUND_TEMPLATE: "",
 });
 
 export const fetchConfig = async () => {
