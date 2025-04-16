@@ -5,9 +5,6 @@ import pytesseract
 
 from ..config import Config
 
-# Add import for TTSManager if type hinting is desired, otherwise optional
-# from ..speech.tts_manager import TTSManager
-
 
 def timeit(message=None):
     def decorator(func):
