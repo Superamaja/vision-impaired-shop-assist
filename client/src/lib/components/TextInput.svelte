@@ -1,7 +1,7 @@
 <script lang="ts">
   let {
     label = "",
-    value = "",
+    value = $bindable(),
     update = () => {},
     placeholder = "",
   } = $props<{
