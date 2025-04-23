@@ -16,8 +16,10 @@ export const config: Config = $state({
   TTS_BARCODE_NOT_FOUND_TEMPLATE: "",
 });
 
+import { API_BASE_URL } from "../config";
+
 export const fetchConfig = async () => {
-  const response = await fetch("http://localhost:5001/api/settings");
+  const response = await fetch(`${API_BASE_URL}/api/settings`);
   const data = await response.json();
   for (const key in data) {
     if (key in config) {
@@ -27,7 +29,7 @@ export const fetchConfig = async () => {
 };
 
 export const updateConfig = async () => {
-  const response = await fetch("http://localhost:5001/api/settings", {
+  const response = await fetch(`${API_BASE_URL}/api/settings`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
