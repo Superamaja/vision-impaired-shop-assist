@@ -33,7 +33,12 @@ def get_barcodes():
     barcodes = db_manager.get_all_barcodes()
     return jsonify(
         [
-            {"barcode": b.barcode, "product_name": b.product_name, "brand": b.brand}
+            {
+                "barcode": b.barcode,
+                "product_name": b.product_name,
+                "brand": b.brand,
+                "allergies": b.allergies,
+            }
             for b in barcodes
         ]
     )
@@ -49,6 +54,7 @@ def get_barcode(barcode):
             "barcode": result.barcode,
             "product_name": result.product_name,
             "brand": result.brand,
+            "allergies": result.allergies,
         }
     )
 
@@ -61,7 +67,10 @@ def add_barcode():
 
     try:
         barcode_data = db_manager.add_barcode(
-            data["barcode"], data["product_name"], data["brand"]
+            data["barcode"],
+            data["product_name"],
+            data["brand"],
+            data.get("allergies"),  # Optional field
         )
         return jsonify(barcode_data), 201
     except BarcodeExistsError as e:

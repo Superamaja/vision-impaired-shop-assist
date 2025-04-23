@@ -16,9 +16,10 @@ class Barcode(Base):
     barcode = Column(String, primary_key=True)
     product_name = Column(String)
     brand = Column(String)
+    allergies = Column(String, default="none")
 
     def __repr__(self):
-        return f"<Barcode(barcode={self.barcode}, product_name={self.product_name}, brand={self.brand})>"
+        return f"<Barcode(barcode={self.barcode}, product_name={self.product_name}, brand={self.brand}, allergies={self.allergies})>"
 
 
 class DatabaseManager:
@@ -32,11 +33,20 @@ class DatabaseManager:
     def get_session(self):
         return self.Session()
 
-    def add_barcode(self, barcode: str, product_name: str, brand: str) -> dict:
+    def add_barcode(
+        self, barcode: str, product_name: str, brand: str, allergies: str = None
+    ) -> dict:
         session = self.get_session()
         try:
+            # If allergies is None or empty, set it to "none"
+            if not allergies:
+                allergies = "none"
+
             barcode_entry = Barcode(
-                barcode=barcode, product_name=product_name, brand=brand
+                barcode=barcode,
+                product_name=product_name,
+                brand=brand,
+                allergies=allergies,
             )
             session.add(barcode_entry)
             session.commit()
@@ -45,6 +55,7 @@ class DatabaseManager:
                 "barcode": barcode_entry.barcode,
                 "product_name": barcode_entry.product_name,
                 "brand": barcode_entry.brand,
+                "allergies": barcode_entry.allergies,
             }
             return result
         except IntegrityError:

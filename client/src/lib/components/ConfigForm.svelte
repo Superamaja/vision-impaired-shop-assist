@@ -51,7 +51,7 @@
   />
   <p class="text-xs text-gray-500 mt-1">
     Available variables: <code>{"{product_name}"}</code>,
-    <code>{"{brand}"}</code>
+    <code>{"{brand}"}</code>, <code>{"{allergies}"}</code>
   </p>
 
   <TextInput

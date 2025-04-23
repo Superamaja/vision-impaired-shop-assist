@@ -5,10 +5,16 @@
     barcode: string;
     product_name: string;
     brand: string;
+    allergies?: string;
   };
 
   let barcodes: Barcode[] = $state([]);
-  let newBarcode = $state({ barcode: "", product_name: "", brand: "" });
+  let newBarcode = $state({
+    barcode: "",
+    product_name: "",
+    brand: "",
+    allergies: "",
+  });
   let error = $state("");
   let success = $state("");
   let isLoading = $state(false);
@@ -34,7 +40,7 @@
       const barcodeToAdd = { ...newBarcode };
       const originalBarcodes = barcodes;
       barcodes = [...barcodes, barcodeToAdd];
-      newBarcode = { barcode: "", product_name: "", brand: "" };
+      newBarcode = { barcode: "", product_name: "", brand: "", allergies: "" };
 
       const response = await fetch("http://localhost:5001/api/barcodes", {
         method: "POST",
@@ -197,6 +203,18 @@
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
       />
     </div>
+    <div>
+      <label for="allergies" class="block text-sm font-medium text-gray-700"
+        >Allergies (leave blank if none)</label
+      >
+      <input
+        id="allergies"
+        type="text"
+        bind:value={newBarcode.allergies}
+        placeholder="e.g., nuts, dairy, gluten"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+    </div>
     <button
       type="submit"
       class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -226,8 +244,11 @@
               <p class="text-sm text-gray-600">
                 Barcode: {barcode.barcode}
               </p>
-              <p class="text-sm text-gray-600 mb-3">
+              <p class="text-sm text-gray-600">
                 Brand: {barcode.brand}
+              </p>
+              <p class="text-sm text-gray-600 mb-3">
+                Allergies: {barcode.allergies || "none"}
               </p>
             </div>
             <div class="mt-auto pt-2 border-t">

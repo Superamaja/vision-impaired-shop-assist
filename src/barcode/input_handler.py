@@ -79,9 +79,13 @@ class BarcodeInputHandler:
 
         if barcode_info:
             message = Config.TTS_BARCODE_FOUND_TEMPLATE.format(
-                product_name=barcode_info.product_name, brand=barcode_info.brand
+                product_name=barcode_info.product_name,
+                brand=barcode_info.brand,
+                allergies=barcode_info.allergies or "none",
             )
-            print(f"Product: {barcode_info.product_name}, Brand: {barcode_info.brand}")
+            print(
+                f"Product: {barcode_info.product_name}, Brand: {barcode_info.brand}, Allergies: {barcode_info.allergies or 'none'}"
+            )
 
             # Speak the product information if TTS is available
             if self.tts_manager:
