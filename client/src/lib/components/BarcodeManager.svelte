@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  /**
+   * Represents a barcode entry in the system
+   */
   type Barcode = {
     barcode: string;
     product_name: string;
@@ -8,6 +11,7 @@
     allergies?: string;
   };
 
+  // Reactive state variables for managing barcode data and UI state
   let barcodes: Barcode[] = $state([]);
   let newBarcode = $state({
     barcode: "",
@@ -20,6 +24,10 @@
   let isLoading = $state(false);
   let loadingMessage = $state("");
 
+  /**
+   * Fetches all barcode entries from the API server
+   * Updates the barcodes array with the retrieved data
+   */
   async function fetchBarcodes() {
     try {
       const response = await fetch("http://localhost:5001/api/barcodes");
@@ -29,6 +37,12 @@
     }
   }
 
+  /**
+   * Handles form submission to add a new barcode entry
+   * Implements optimistic updates with rollback on failure
+   *
+   * @param event - Form submission event
+   */
   async function addBarcode(event: Event) {
     event.preventDefault();
     error = "";
@@ -39,6 +53,7 @@
     try {
       const barcodeToAdd = { ...newBarcode };
       const originalBarcodes = barcodes;
+      // Optimistic update - add to UI immediately
       barcodes = [...barcodes, barcodeToAdd];
       newBarcode = { barcode: "", product_name: "", brand: "", allergies: "" };
 
@@ -49,12 +64,13 @@
       });
 
       if (response.ok) {
-        await fetchBarcodes();
+        await fetchBarcodes(); // Refresh to get server state
         success = "Barcode added successfully";
         isLoading = false;
         loadingMessage = "";
         setTimeout(() => (success = ""), 5000);
       } else {
+        // Rollback optimistic update on error
         barcodes = originalBarcodes;
         const data = await response.json();
         if (response.status === 409) {
@@ -67,7 +83,7 @@
         setTimeout(() => (error = ""), 5000);
       }
     } catch (e) {
-      await fetchBarcodes();
+      await fetchBarcodes(); // Refresh on network error
       error = "Failed to add barcode. Check network connection.";
       isLoading = false;
       loadingMessage = "";
@@ -75,6 +91,12 @@
     }
   }
 
+  /**
+   * Deletes a barcode entry from the database
+   * Implements optimistic updates with rollback on failure
+   *
+   * @param barcode - The barcode identifier to delete
+   */
   async function deleteBarcode(barcode: string) {
     error = "";
     success = "";
@@ -83,6 +105,7 @@
 
     try {
       const originalBarcodes = barcodes;
+      // Optimistic update - remove from UI immediately
       barcodes = barcodes.filter((b) => b.barcode !== barcode);
 
       const response = await fetch(
@@ -98,6 +121,7 @@
         loadingMessage = "";
         setTimeout(() => (success = ""), 5000);
       } else {
+        // Rollback optimistic update on error
         barcodes = originalBarcodes;
         error = "Failed to delete barcode";
         isLoading = false;
@@ -105,7 +129,7 @@
         setTimeout(() => (error = ""), 5000);
       }
     } catch (e) {
-      await fetchBarcodes();
+      await fetchBarcodes(); // Refresh on network error
       error = "Failed to delete barcode. Check network connection.";
       isLoading = false;
       loadingMessage = "";
@@ -113,9 +137,23 @@
     }
   }
 
+  // Load barcodes when component mounts
   onMount(fetchBarcodes);
 </script>
 
+<!--
+  BarcodeManager Component
+  
+  This component provides a complete interface for managing barcode entries in the
+  Vision-Impaired Shopping Assistant. It allows users to:
+  - View all stored barcode entries in a responsive grid layout
+  - Add new barcode entries with product name, brand, and allergy information
+  - Delete existing barcode entries with confirmation
+  - Handle loading states and error/success messaging
+  
+  The component uses optimistic updates for better user experience,
+  immediately reflecting changes in the UI while making API calls in the background.
+-->
 <div class="space-y-6 max-w-6xl mx-auto p-4">
   <h2 class="text-2xl font-bold mb-4">Barcode Management</h2>
 

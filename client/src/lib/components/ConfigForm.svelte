@@ -5,11 +5,28 @@
   import Toggle from "./Toggle.svelte";
   import TextInput from "./TextInput.svelte";
 
+  /**
+   * Load configuration from the server when the component mounts
+   */
   onMount(() => {
     fetchConfig();
   });
 </script>
 
+<!--
+  ConfigForm Component
+  
+  This component provides a comprehensive configuration interface for the
+  Vision-Impaired Shopping Assistant. It allows users to adjust:
+  
+  - Debug Mode: Toggle visual debug windows for development
+  - TTS Speed: Control speech rate for text-to-speech output
+  - Image Thresholding: Adjust image processing parameters
+  - TTS Templates: Customize announcement messages for OCR and barcode events
+  
+  All changes are automatically synced with the backend server through
+  the updateConfig function from the stores module.
+-->
 <form class="space-y-6 max-w-md mx-auto p-4">
   <Toggle
     label="Debug Mode"

@@ -1,13 +1,33 @@
 <script lang="ts">
-  let { checked = $bindable(), label, update = () => {} }: Props = $props();
-
+  /**
+   * Toggle Component Props Interface
+   *
+   * @interface Props
+   * @property {boolean} checked - Current toggle state (bindable)
+   * @property {string} label - Display label for the toggle
+   * @property {() => void} update - Optional callback fired on state change
+   */
   interface Props {
     checked: boolean;
     label: string;
     update?: () => void;
   }
+
+  let { checked = $bindable(), label, update = () => {} }: Props = $props();
 </script>
 
+<!--
+  Toggle Component
+  
+  A custom toggle switch component with smooth animations and accessibility features.
+  Provides a modern alternative to traditional checkboxes with visual feedback.
+  
+  Features:
+  - Bindable checked state for two-way data binding
+  - Smooth CSS transitions for state changes
+  - Screen reader accessible with proper labeling
+  - Callback support for handling state changes
+-->
 <label class="flex items-center gap-2 cursor-pointer">
   <div class="relative">
     <input
